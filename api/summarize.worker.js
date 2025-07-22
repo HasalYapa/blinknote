@@ -35,7 +35,7 @@ export default {
       const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
+          'Authorization': 'Bearer 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',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
