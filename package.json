@@ -1,0 +1,13 @@
+{
+  "name": "blinknote-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel start"
+  },
+  "dependencies": {
+    "openai": "^4.30.0"
+  }
+} 
