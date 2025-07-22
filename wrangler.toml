@@ -1,3 +1,3 @@
 name = "blinknote-summarizer"
-main = "api/summarize.worker.js"
+main = "frontend/api/summarize.worker.js"
 compatibility_date = "2024-05-01" 
