@@ -58,7 +58,7 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/summarize', {
+      const response = await fetch('https://blinknote-summarizer.dimanthayapa2001.workers.dev', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
