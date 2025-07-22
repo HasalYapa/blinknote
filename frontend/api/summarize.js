@@ -1,8 +1,8 @@
-const { OpenAI } = require('openai');
-const fetch = require('node-fetch'); // If fetch is not available, install node-fetch
+import { OpenAI } from 'openai';
+import fetch from 'node-fetch';
 
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: process.env.OPENAI_API_KEY || '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',
 });
 
 async function extractTextFromUrl(url) {
@@ -38,13 +38,22 @@ function getLengthInstructions(summaryLength) {
   }[summaryLength] || '';
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method Not Allowed' });
     return;
   }
   try {
-    const data = req.body;
+    let data = req.body;
+    if (!data) {
+      // If body is not parsed, parse it manually
+      const buffers = [];
+      for await (const chunk of req) {
+        buffers.push(chunk);
+      }
+      const rawBody = Buffer.concat(buffers).toString();
+      data = JSON.parse(rawBody);
+    }
     const inputText = (data.input_text || '').trim();
     const inputType = data.input_type || 'text';
     const summaryLength = data.summary_length || 'medium';
@@ -97,4 +106,4 @@ module.exports = async (req, res) => {
   } catch (e) {
     return res.status(500).json({ error: `Internal server error: ${e.message}` });
   }
-}; 
+} 
