@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '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',
+  baseURL: 'https://openrouter.ai/api/v1',
 });
 
 async function extractTextFromUrl(url) {
