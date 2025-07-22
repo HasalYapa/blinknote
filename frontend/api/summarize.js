@@ -2,7 +2,7 @@ import { OpenAI } from 'openai';
 import fetch from 'node-fetch';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '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',
+  apiKey: process.env.OPENAI_API_KEY || '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',
 });
 
 async function extractTextFromUrl(url) {
