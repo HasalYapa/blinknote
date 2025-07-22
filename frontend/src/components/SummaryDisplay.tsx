@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
 import { Copy, Download, Check, FileText, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 
