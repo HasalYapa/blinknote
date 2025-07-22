@@ -18,6 +18,9 @@ interface Summary {
   created_date?: string;
 }
 
+const MotionDiv = motion.div as React.ElementType;
+const ZapIcon = Zap as React.ElementType;
+
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentSummary, setCurrentSummary] = useState<Summary | null>(null);
@@ -105,14 +108,14 @@ const App: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <motion.div
+          <MotionDiv
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
+                <ZapIcon className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-3xl font-bold text-gray-900">
                 Instant Text Summarizer
@@ -122,7 +125,7 @@ const App: React.FC = () => {
               Transform lengthy articles, documents, and web pages into clear, concise summaries using advanced AI. 
               Perfect for research, studying, and staying informed.
             </p>
-          </motion.div>
+          </MotionDiv>
         </div>
       </div>
 
@@ -136,13 +139,13 @@ const App: React.FC = () => {
               isLoading={isLoading}
             />
             {error && (
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-red-50 border border-red-200 rounded-lg p-4"
               >
                 <p className="text-red-700 text-sm">{error}</p>
-              </motion.div>
+              </MotionDiv>
             )}
             {currentSummary && (
               <SummaryDisplay summary={currentSummary} />
