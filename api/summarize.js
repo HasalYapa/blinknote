@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { OpenAI } from 'openai';
+const { OpenAI } = require('openai');
+const fetch = require('node-fetch'); // If fetch is not available, install node-fetch
 
 const openai = new OpenAI({
   apiKey: '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',
@@ -15,7 +15,6 @@ async function extractTextFromUrl(url) {
     });
     if (!response.ok) throw new Error('Failed to fetch URL');
     const html = await response.text();
-    // Simple text extraction (no BeautifulSoup in JS, so basic strip)
     const text = html.replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<[^>]+>/g, ' ')
@@ -39,32 +38,36 @@ function getLengthInstructions(summaryLength) {
   }[summaryLength] || '';
 }
 
-export async function POST(req) {
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method Not Allowed' });
+    return;
+  }
   try {
-    const data = await req.json();
+    const data = req.body;
     const inputText = (data.input_text || '').trim();
     const inputType = data.input_type || 'text';
     const summaryLength = data.summary_length || 'medium';
 
     if (!inputText) {
-      return NextResponse.json({ error: 'Input text is required' }, { status: 400 });
+      return res.status(400).json({ error: 'Input text is required' });
     }
     if (!['text', 'url'].includes(inputType)) {
-      return NextResponse.json({ error: 'Invalid input type' }, { status: 400 });
+      return res.status(400).json({ error: 'Invalid input type' });
     }
     if (!['short', 'medium', 'detailed'].includes(summaryLength)) {
-      return NextResponse.json({ error: 'Invalid summary length' }, { status: 400 });
+      return res.status(400).json({ error: 'Invalid summary length' });
     }
 
     let textToSummarize = inputText;
     if (inputType === 'url') {
       textToSummarize = await extractTextFromUrl(inputText);
       if (!textToSummarize || textToSummarize.length < 50) {
-        return NextResponse.json({ error: 'Could not extract sufficient content from URL' }, { status: 400 });
+        return res.status(400).json({ error: 'Could not extract sufficient content from URL' });
       }
     }
     if (textToSummarize.length < 50) {
-      return NextResponse.json({ error: 'Text is too short to summarize' }, { status: 400 });
+      return res.status(400).json({ error: 'Text is too short to summarize' });
     }
 
     const prompt = `Please summarize the following text:\n\n${textToSummarize}\n\n${getLengthInstructions(summaryLength)}\n\nFocus on the main arguments, key facts, and important conclusions. Make the summary clear and well-structured.`;
@@ -83,7 +86,7 @@ export async function POST(req) {
     const originalWordCount = countWords(textToSummarize);
     const summaryWordCount = countWords(summary);
 
-    return NextResponse.json({
+    return res.status(200).json({
       input_text: inputText,
       input_type: inputType,
       summary,
@@ -92,6 +95,6 @@ export async function POST(req) {
       word_count_summary: summaryWordCount,
     });
   } catch (e) {
-    return NextResponse.json({ error: `Internal server error: ${e.message}` }, { status: 500 });
+    return res.status(500).json({ error: `Internal server error: ${e.message}` });
   }
-} 
+}; 
